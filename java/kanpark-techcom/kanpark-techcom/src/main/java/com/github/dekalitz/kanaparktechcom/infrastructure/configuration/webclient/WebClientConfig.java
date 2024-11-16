@@ -1,0 +1,63 @@
+package com.github.dekalitz.kanaparktechcom.infrastructure.configuration.webclient;
+
+import com.github.dekalitz.kanaparktechcom.application.dto.RequestInfo;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
+import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.time.Instant;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+
+@Slf4j
+@Configuration
+public class WebClientConfig {
+
+  @Autowired
+  private HttpServletRequest request;
+
+
+  public WebClient.Builder webClient(WebClientProperties properties) {
+    ConnectionProvider provider = ConnectionProvider.builder("webclient-pool")
+        .maxConnections(properties.getMaxConnections())  // Set jumlah koneksi maksimum dalam pool
+        .pendingAcquireTimeout(Duration.ofMillis(
+            properties.getConnectionTimeoutInMillis())) // Timeout jika koneksi tidak tersedia
+        .build();
+    HttpClient httpClient = HttpClient.create(provider)
+        .responseTimeout(Duration.ofMillis(properties.getConnectionTimeoutInMillis()))
+        .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(5))  // Timeout baca
+            .addHandlerLast(new WriteTimeoutHandler(5))); // Timeout tulis
+    return WebClient.builder()
+        .baseUrl(properties.getBaseUrl())
+        .filter(logResponseTime())
+        .clientConnector(new ReactorClientHttpConnector(httpClient));
+  }
+
+  // Filter untuk logging response time
+  private ExchangeFilterFunction logResponseTime() {
+    return (request, next) -> {
+      RequestInfo requestInfo = getRequestInfo();
+      Instant start = Instant.now();  // Menyimpan waktu mulai
+      return next.exchange(request)
+          .doOnTerminate(() -> {
+            Duration duration = Duration.between(start, Instant.now());  // Menghitung durasi
+            log.info(
+                "requestId: " + requestInfo.getRequestId() + " Request to " + request.url()
+                    + " took "
+                    + duration.toMillis() + " ms");
+          });
+    };
+  }
+
+
+  public RequestInfo getRequestInfo() {
+    return (RequestInfo) request.getAttribute("requestInfo");
+  }
+}

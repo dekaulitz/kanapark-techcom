@@ -1,4 +1,4 @@
-package com.github.dekalitz.kanaparktechcom.handler.http;
+package com.github.dekalitz.kanaparktechcom.handler.http.controller;
 
 import com.github.dekalitz.kanaparktechcom.application.dto.RequestInfo;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security.UserAuthToken;

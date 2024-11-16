@@ -23,41 +23,49 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response<Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
-        var errCode = ErrorCode.errorOnRequiredField(errors);
-        return getResponseResponseEntity(errCode);
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Response<Object>> handleValidationErrors(
+      MethodArgumentNotValidException ex) {
+    List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        .map(FieldError::getDefaultMessage).collect(Collectors.toList());
+    var errCode = ErrorCode.errorOnRequiredField(errors);
+    return getResponseResponseEntity(errCode);
 
-    }
-    @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<Response<Object>> handleApplicationException(ApplicationException ex) {
-        var errCode = ex.getErrorCode();
-        return getResponseResponseEntity(errCode);
-    }
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Response<Object>> handleApplicationException(UnauthorizedException ex) {
-        var errCode = ex.getErrorCode();
-        return getResponseResponseEntity(errCode);
-    }
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<Response<Object>> handleAccessDeniedException(AuthenticationException ex) {
-        var errCode = ErrorCode.errorOnForbiddenRequest(ex.getMessage());
-        return getResponseResponseEntity(errCode);
-    }
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<Response<Object>> handlingInvalidMethod(HttpRequestMethodNotSupportedException ex) {
-        var errCode = ErrorCode.errorOnInvalidMethod(ex.getMessage());
-        var result = new Response<>(new Response.MetaResponse("failed"), null,
-                new Response.ErrorResponse(errCode.statusCode(), errCode.message()));
+  }
 
-        return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.METHOD_NOT_ALLOWED);
-    }
-    private ResponseEntity<Response<Object>> getResponseResponseEntity(ErrorCode errCode) {
-        var result = new Response<>(new Response.MetaResponse("failed"), null,
-                new Response.ErrorResponse(errCode.statusCode(), errCode.message()));
-        var httpCode = HttpStatus.resolve(errCode.httpCode());
-        return new ResponseEntity<>(result, new HttpHeaders(), httpCode != null ? httpCode : HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(ApplicationException.class)
+  public ResponseEntity<Response<Object>> handleApplicationException(ApplicationException ex) {
+    var errCode = ex.getErrorCode();
+    return getResponseResponseEntity(errCode);
+  }
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<Response<Object>> handleApplicationException(UnauthorizedException ex) {
+    var errCode = ex.getErrorCode();
+    return getResponseResponseEntity(errCode);
+  }
+
+  @ExceptionHandler(AuthenticationException.class)
+  public ResponseEntity<Response<Object>> handleAccessDeniedException(AuthenticationException ex) {
+    var errCode = ErrorCode.errorOnForbiddenRequest(ex.getMessage());
+    return getResponseResponseEntity(errCode);
+  }
+
+  @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+  public ResponseEntity<Response<Object>> handlingInvalidMethod(
+      HttpRequestMethodNotSupportedException ex) {
+    var errCode = ErrorCode.errorOnInvalidMethod(ex.getMessage());
+    var result = new Response<>(new Response.MetaResponse("failed"), null,
+        new Response.ErrorResponse(errCode.statusCode(), errCode.message()));
+    return new ResponseEntity<>(result, new HttpHeaders(), HttpStatus.METHOD_NOT_ALLOWED);
+  }
+
+  private ResponseEntity<Response<Object>> getResponseResponseEntity(ErrorCode errCode) {
+    var result = new Response<>(new Response.MetaResponse("failed"), null,
+        new Response.ErrorResponse(errCode.statusCode(), errCode.message()));
+    var httpCode = HttpStatus.resolve(errCode.httpCode());
+    return new ResponseEntity<>(result, new HttpHeaders(),
+        httpCode != null ? httpCode : HttpStatus.BAD_REQUEST);
+  }
 }
 

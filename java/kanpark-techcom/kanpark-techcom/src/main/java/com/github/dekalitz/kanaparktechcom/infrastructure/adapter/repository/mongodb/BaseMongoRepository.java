@@ -3,6 +3,7 @@ package com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.mo
 import com.github.dekalitz.kanaparktechcom.domain.model.BaseModel;
 import com.github.dekalitz.kanaparktechcom.domain.repository.database.BaseRepository;
 import com.mongodb.client.result.DeleteResult;
+import lombok.Getter;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class BaseMongoRepository<T extends BaseModel> implements BaseRepository<T> {
+    @Getter
     private final MongoTemplate mongoTemplate;
     protected final String collectionName;
     protected Class<T> entityClass;
@@ -53,4 +55,5 @@ public class BaseMongoRepository<T extends BaseModel> implements BaseRepository<
         Query query = new Query().addCriteria(Criteria.where("_id").is(new ObjectId(id)));
         return mongoTemplate.exists(query, this.entityClass, this.collectionName);
     }
+
 }

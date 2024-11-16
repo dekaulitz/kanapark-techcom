@@ -1,5 +1,6 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.configuration.application;
 
+import com.github.dekalitz.kanaparktechcom.application.usecase.RestSample;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogin;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogout;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoRefreshToken;
@@ -15,54 +16,64 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UseCaseConfiguration {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RepositoryConfiguration repositoryConfiguration;
-    private final ServiceConfiguration serviceConfiguration;
+  private final JwtTokenProvider jwtTokenProvider;
+  private final RepositoryConfiguration repositoryConfiguration;
+  private final ServiceConfiguration serviceConfiguration;
+  private final RestConfiguration restConfiguration;
 
-    @Autowired
-    public UseCaseConfiguration(JwtTokenProvider jwtTokenProvider, RepositoryConfiguration repositoryConfiguration, ServiceConfiguration serviceConfiguration) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.repositoryConfiguration = repositoryConfiguration;
-        this.serviceConfiguration = serviceConfiguration;
-    }
+  @Autowired
+  public UseCaseConfiguration(JwtTokenProvider jwtTokenProvider,
+      RepositoryConfiguration repositoryConfiguration, ServiceConfiguration serviceConfiguration,
+      RestConfiguration restConfiguration) {
+    this.jwtTokenProvider = jwtTokenProvider;
+    this.repositoryConfiguration = repositoryConfiguration;
+    this.serviceConfiguration = serviceConfiguration;
+    this.restConfiguration = restConfiguration;
+  }
 
-    @Bean
-    public DoLogin doLogin() {
-        return new DoLogin(this.repositoryConfiguration.getUserRepository(), jwtTokenProvider);
-    }
+  @Bean
+  public DoLogin doLogin() {
+    return new DoLogin(this.repositoryConfiguration.getUserRepository(), jwtTokenProvider);
+  }
 
-    @Bean
-    public DoRefreshToken doRefreshToken() {
-        return new DoRefreshToken(jwtTokenProvider, this.serviceConfiguration.getUserService());
-    }
+  @Bean
+  public DoRefreshToken doRefreshToken() {
+    return new DoRefreshToken(jwtTokenProvider, this.serviceConfiguration.getUserService());
+  }
 
-    @Bean
-    public DoRegistration doRegistration() {
-        return new DoRegistration(this.serviceConfiguration.getUserService());
-    }
+  @Bean
+  public DoRegistration doRegistration() {
+    return new DoRegistration(this.serviceConfiguration.getUserService());
+  }
 
-    @Bean
-    public DoLogout doLogout() {
-        return new DoLogout(jwtTokenProvider);
-    }
+  @Bean
+  public DoLogout doLogout() {
+    return new DoLogout(jwtTokenProvider);
+  }
 
-    @Bean
-    public DoRegistration getUserRegistration() {
-        return new DoRegistration(this.serviceConfiguration.getUserService());
-    }
+  @Bean
+  public DoRegistration getUserRegistration() {
+    return new DoRegistration(this.serviceConfiguration.getUserService());
+  }
 
-    @Bean
-    public UpdateDetailUsers getUpdateUserDetail() {
-        return new UpdateDetailUsers(this.serviceConfiguration.getUserService(), this.repositoryConfiguration.getUserRepository());
-    }
+  @Bean
+  public UpdateDetailUsers getUpdateUserDetail() {
+    return new UpdateDetailUsers(this.serviceConfiguration.getUserService(),
+        this.repositoryConfiguration.getUserRepository());
+  }
 
-    @Bean
-    public GetAllUsers getAllUsers() {
-        return new GetAllUsers(this.serviceConfiguration.getUserService());
-    }
+  @Bean
+  public GetAllUsers getAllUsers() {
+    return new GetAllUsers(this.serviceConfiguration.getUserService());
+  }
 
-    @Bean
-    public GetDetailUsers getDetailUsers() {
-        return new GetDetailUsers(this.serviceConfiguration.getUserService());
-    }
+  @Bean
+  public GetDetailUsers getDetailUsers() {
+    return new GetDetailUsers(this.serviceConfiguration.getUserService());
+  }
+
+  @Bean
+  public RestSample restSample() {
+    return new RestSample(this.restConfiguration.something());
+  }
 }

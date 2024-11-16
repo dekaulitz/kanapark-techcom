@@ -2,11 +2,11 @@ package com.github.dekalitz.kanaparktechcom.handler.http.controller;
 
 import com.github.dekalitz.kanaparktechcom.application.dto.*;
 import com.github.dekalitz.kanaparktechcom.application.exception.ApplicationException;
+import com.github.dekalitz.kanaparktechcom.application.usecase.RestSample;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogin;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogout;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoRefreshToken;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoRegistration;
-import com.github.dekalitz.kanaparktechcom.handler.http.BaseApiController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +24,22 @@ public class AuthController extends BaseApiController {
     private final DoLogin doLogin;
     private final DoRefreshToken doRefreshToken;
     private final DoLogout doLogout;
+    private final RestSample restSample;
 
-    public AuthController(HttpServletRequest request, DoRegistration doRegistration, DoLogin doLogin, DoRefreshToken doRefreshToken, DoLogout doLogout) {
+    public AuthController(HttpServletRequest request, DoRegistration doRegistration, DoLogin doLogin, DoRefreshToken doRefreshToken, DoLogout doLogout,
+        RestSample restSample) {
         super(request);
         this.doRegistration = doRegistration;
         this.doLogin = doLogin;
         this.doRefreshToken = doRefreshToken;
         this.doLogout = doLogout;
+      this.restSample = restSample;
     }
 
     @GetMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response<ResponseAuthDto>> doLogin(@RequestBody @Valid RequestLoginDto requestLoginDto) throws ApplicationException {
-        return ResponseEntity.ok(doLogin.execute(requestLoginDto));
+    public Object doLogin(@RequestBody @Valid RequestLoginDto requestLoginDto) throws ApplicationException {
+        return restSample.execute(null);
+//        return ResponseEntity.ok(doLogin.execute(requestLoginDto));
     }
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
