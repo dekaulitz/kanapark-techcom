@@ -53,4 +53,17 @@ public record ErrorCode(String statusCode, String message, Integer httpCode) {
   public static ErrorCode errorOnInvalidMethod(String message) {
     return new ErrorCode("X455", message, 405);
   }
+
+  public static ErrorCode errorOnDataNotFound() {
+    return new ErrorCode("X404", "data not found", 404);
+  }
+
+  public static ErrorCode errorOnUnhandledException() {
+    return new ErrorCode("X500", "internal server error", 500);
+  }
+
+
+  public static ErrorCode generalError(String message) {
+    return new ErrorCode("X300", message, 400);
+  }
 }

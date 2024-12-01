@@ -1,6 +1,5 @@
 package com.github.dekalitz.kanaparktechcom.application.dto;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
 import lombok.Builder;
 import lombok.Data;
 

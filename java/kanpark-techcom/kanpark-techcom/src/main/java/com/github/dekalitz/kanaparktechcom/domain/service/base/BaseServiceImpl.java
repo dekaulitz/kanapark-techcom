@@ -1,17 +1,17 @@
 package com.github.dekalitz.kanaparktechcom.domain.service.base;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.BaseModel;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.BaseRepository;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelBase;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryBase;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class BaseServiceImpl<T extends BaseModel> implements BaseService<T> {
-    private final BaseRepository<T> repository;
+public class BaseServiceImpl<T extends ModelBase> implements BaseService<T> {
+    private final RepositoryBase<T> repository;
 
-    public BaseServiceImpl(BaseRepository<T> repository) {
+    public BaseServiceImpl(RepositoryBase<T> repository) {
         this.repository = repository;
     }
 

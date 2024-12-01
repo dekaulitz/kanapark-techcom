@@ -8,17 +8,17 @@ import com.github.dekalitz.kanaparktechcom.application.mapper.UserMapper;
 import com.github.dekalitz.kanaparktechcom.application.records.ErrorCode;
 import com.github.dekalitz.kanaparktechcom.application.usecase.BaseCase;
 import com.github.dekalitz.kanaparktechcom.application.usecase.UseCase;
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DoLogin extends BaseCase<ResponseAuthDto> implements UseCase<Response<ResponseAuthDto>, RequestLoginDto> {
-    private final UserRepository userRepository;
+    private final RepositoryUser userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public DoLogin(UserRepository userRepository, JwtTokenProvider jwtTokenProvider) {
+    public DoLogin(RepositoryUser userRepository, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
     }
@@ -26,13 +26,13 @@ public class DoLogin extends BaseCase<ResponseAuthDto> implements UseCase<Respon
     @Override
     public Response<ResponseAuthDto> execute(RequestLoginDto dto) {
         try {
-            UserModel userModel = userRepository.verifyEmailAndPassword(dto.getEmail(), dto.getPassword());
-            if (null == userModel) {
+            ModelUser modelUser = userRepository.verifyEmailAndPassword(dto.getEmail(), dto.getPassword());
+            if (null == modelUser) {
                 throw new ApplicationException(ErrorCode.errorOnInvalidLogin());
             }
-            String newAccessToken = jwtTokenProvider.generateAccessToken(userModel);
-            String newRefreshToken = jwtTokenProvider.generateRefreshToken(userModel.getId());
-            return ok(UserMapper.constructNewAccessInfo(newAccessToken, newRefreshToken, userModel));
+            String newAccessToken = jwtTokenProvider.generateAccessToken(modelUser);
+            String newRefreshToken = jwtTokenProvider.generateRefreshToken(modelUser.getId());
+            return ok(UserMapper.constructNewAccessInfo(newAccessToken, newRefreshToken, modelUser));
         } catch (ApplicationException exception) {
             log.error("doLogin failed ex", exception);
             return failed(exception.getErrorCode());

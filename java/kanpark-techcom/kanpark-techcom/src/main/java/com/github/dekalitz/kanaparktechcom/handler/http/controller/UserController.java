@@ -6,7 +6,7 @@ import com.github.dekalitz.kanaparktechcom.application.dto.Response;
 import com.github.dekalitz.kanaparktechcom.application.exception.ApplicationException;
 import com.github.dekalitz.kanaparktechcom.application.usecase.users.GetAllUsers;
 import com.github.dekalitz.kanaparktechcom.application.usecase.users.GetDetailUsers;
-import com.github.dekalitz.kanaparktechcom.domain.service.userservice.UserService;
+import com.github.dekalitz.kanaparktechcom.domain.service.serviceuser.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -23,35 +23,42 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @Slf4j
 public class UserController extends BaseApiController {
-    private final UserService userService;
 
-    private final GetDetailUsers getDetailUsers;
-    private final GetAllUsers getAllUsers;
+  private final UserService userService;
+  private final GetDetailUsers getDetailUsers;
+  private final GetAllUsers getAllUsers;
 
-    @Autowired
-    public UserController(UserService userService, GetDetailUsers getDetailUsers, HttpServletRequest request, GetAllUsers getAllUsers) {
-        super(request);
-        this.userService = userService;
-        this.getDetailUsers = getDetailUsers;
-        this.getAllUsers = getAllUsers;
-    }
+  @Autowired
+  public UserController(UserService userService, GetDetailUsers getDetailUsers,
+      HttpServletRequest request, GetAllUsers getAllUsers) {
+    super(request);
+    this.userService = userService;
+    this.getDetailUsers = getDetailUsers;
+    this.getAllUsers = getAllUsers;
+  }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('USER:READ') or hasAuthority('USER:WRITE')")
-    public ResponseEntity<Response<List<ResponseUserDto>>> getAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(getAllUsers.execute(null));
-    }
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('USER:READ') or hasAuthority('USER:WRITE')")
+  public ResponseEntity<Response<List<ResponseUserDto>>> getAll() {
+    return ResponseEntity.status(HttpStatus.OK).body(getAllUsers.execute(null));
+  }
 
-    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('USER:READ') or hasAuthority('USER:WRITE')")
-    public ResponseEntity<Response<ResponseUserDto>> getDetailById(@PathVariable String id) throws ApplicationException {
-        return ResponseEntity.status(HttpStatus.OK).body(getDetailUsers.execute(id));
+  @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('USER:READ') or hasAuthority('USER:WRITE')")
+  public ResponseEntity<Response<ResponseUserDto>> getDetailById(@PathVariable String id)
+      throws ApplicationException {
+    return ResponseEntity.status(HttpStatus.OK).body(getDetailUsers.execute(id));
 
-    }
+  }
 
-    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAuthority('USER:WRITE')")
-    public ResponseEntity<Response<ResponseUserDto>> updateById(@PathVariable String id, @RequestBody @Valid RequestUserDto requestUserDto) throws ApplicationException {
-        return ResponseEntity.status(HttpStatus.OK).body(getDetailUsers.execute(id));
-    }
+  @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PreAuthorize("hasAuthority('USER:WRITE')")
+  public ResponseEntity<Response<ResponseUserDto>> updateById(@PathVariable String id,
+      @RequestBody @Valid RequestUserDto requestUserDto) throws ApplicationException {
+    return ResponseEntity.status(HttpStatus.OK).body(getDetailUsers.execute(id));
+
+
+  }
+
+
 }

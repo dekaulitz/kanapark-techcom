@@ -1,24 +1,25 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.redis;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
-import com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.UserRepositoryImpl;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
+import com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.RepositoryUserImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Duration;
 
-public class UserCacheRepositoryImpl extends UserRepositoryImpl implements UserRepository {
+public class CacheRepositoryUserImpl extends RepositoryUserImpl implements
+    RepositoryUser {
 
-    private final RedisTemplate<String, UserModel> redisTemplate;
+    private final RedisTemplate<String, ModelUser> redisTemplate;
 
-    public UserCacheRepositoryImpl(PasswordEncoder passwordEncoder, RedisTemplate<String, UserModel> redisTemplate) {
+    public CacheRepositoryUserImpl(PasswordEncoder passwordEncoder, RedisTemplate<String, ModelUser> redisTemplate) {
         super(passwordEncoder);
         this.redisTemplate = redisTemplate;
     }
 
     @Override
-    public UserModel findByEmail(String email) {
+    public ModelUser findByEmail(String email) {
         final String cachingKey = getCacheKey(email);
         var userModel = redisTemplate.opsForValue().get(cachingKey);
         if (null == userModel) {

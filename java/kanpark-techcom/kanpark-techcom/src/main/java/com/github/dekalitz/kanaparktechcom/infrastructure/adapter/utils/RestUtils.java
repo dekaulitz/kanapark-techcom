@@ -41,7 +41,7 @@ public class RestUtils<Request, Response> {
     return this;
   }
 
-  public Mono<Response> post(Request request) {
+  public Mono<RestResult<Response>> post(Request request) {
     return this.webClient.post()
         .uri(uriBuilder -> {
           UriBuilder uri = uriBuilder.path(this.url);
@@ -57,18 +57,15 @@ public class RestUtils<Request, Response> {
           }
         })
         .retrieve()
-        .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class)
-            .flatMap(response -> {
-              log.info("request to url{} payload:{},headers:{} httpStatus:{} response:{}", this.url,
-                  request, this.headers,
-                  clientResponse.statusCode(), response);
-              return Mono.error(new ApplicationException(
-                  ErrorCode.outboundException()));
-            }))
         .bodyToMono(this.responseClass)
-        .doOnNext(response -> {
-          log.info("request to url{}, payload:{},headers:{}, response:{}", this.url,
-              request, this.headers, response);
+        .flatMap(response -> Mono.just(new RestResult<>(response, null, null)))
+        .onErrorResume(WebClientResponseException.class, ex -> {
+          if (this.async) {
+            return Mono.error(new ApplicationException(
+                ErrorCode.outboundException()));
+          }
+          return Mono.just(new RestResult<>(null, ex.getMessage(),
+              new ApplicationException(ErrorCode.outboundException())));
         });
   }
 
@@ -99,7 +96,7 @@ public class RestUtils<Request, Response> {
         });
   }
 
-  public Mono<Response> put(Request request) {
+  public Mono<RestResult<Response>> put(Request request) {
     return this.webClient.put()
         .uri(uriBuilder -> {
           UriBuilder uri = uriBuilder.path(this.url);
@@ -115,22 +112,19 @@ public class RestUtils<Request, Response> {
         })
         .bodyValue(request)
         .retrieve()
-        .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class)
-            .flatMap(response -> {
-              log.info("request to url{} payload:{},headers:{} httpStatus:{} response:{}", this.url,
-                  request, this.headers,
-                  clientResponse.statusCode(), response);
-              return Mono.error(new ApplicationException(
-                  ErrorCode.outboundException()));
-            }))
         .bodyToMono(this.responseClass)
-        .doOnNext(response -> {
-          log.info("request to url{}, payload:{},headers:{}, response:{}", this.url,
-              request, this.headers, response);
+        .flatMap(response -> Mono.just(new RestResult<>(response, null, null)))
+        .onErrorResume(WebClientResponseException.class, ex -> {
+          if (this.async) {
+            return Mono.error(new ApplicationException(
+                ErrorCode.outboundException()));
+          }
+          return Mono.just(new RestResult<>(null, ex.getMessage(),
+              new ApplicationException(ErrorCode.outboundException())));
         });
   }
 
-  public Mono<Response> delete() {
+  public Mono<RestResult<Response>> delete() {
     return this.webClient.put()
         .uri(uriBuilder -> {
           UriBuilder uri = uriBuilder.path(this.url);
@@ -145,16 +139,15 @@ public class RestUtils<Request, Response> {
           }
         })
         .retrieve()
-        .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(String.class)
-            .flatMap(response -> {
-              log.info("request to url{},headers:{} httpStatus:{} response:{}", this.url,
-                  this.headers, clientResponse.statusCode(), response);
-              return Mono.error(new ApplicationException(
-                  ErrorCode.outboundException()));
-            }))
         .bodyToMono(this.responseClass)
-        .doOnNext(response -> {
-          log.info("request to url{},headers:{}, response:{}", this.url, this.headers, response);
+        .flatMap(response -> Mono.just(new RestResult<>(response, null, null)))
+        .onErrorResume(WebClientResponseException.class, ex -> {
+          if (this.async) {
+            return Mono.error(new ApplicationException(
+                ErrorCode.outboundException()));
+          }
+          return Mono.just(new RestResult<>(null, ex.getMessage(),
+              new ApplicationException(ErrorCode.outboundException())));
         });
   }
 

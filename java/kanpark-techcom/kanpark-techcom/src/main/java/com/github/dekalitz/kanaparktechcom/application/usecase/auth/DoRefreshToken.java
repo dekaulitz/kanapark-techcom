@@ -8,8 +8,8 @@ import com.github.dekalitz.kanaparktechcom.application.mapper.UserMapper;
 import com.github.dekalitz.kanaparktechcom.application.records.ErrorCode;
 import com.github.dekalitz.kanaparktechcom.application.usecase.BaseCase;
 import com.github.dekalitz.kanaparktechcom.application.usecase.UseCase;
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
-import com.github.dekalitz.kanaparktechcom.domain.service.userservice.UserService;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
+import com.github.dekalitz.kanaparktechcom.domain.service.serviceuser.UserService;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security.JwtTokenProvider;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +37,14 @@ public class DoRefreshToken extends BaseCase<ResponseAuthDto> implements UseCase
             if (!claimsRefreshToken.getSubject().equals(claimsAccessToken.getSubject())) {
                 throw new UnauthorizedException("unauthorized request");
             }
-            final UserModel userModel = userService.findById(claimsAccessToken.getSubject()).orElse(null);
-            if (null == userModel) {
+            final ModelUser modelUser = userService.findById(claimsAccessToken.getSubject()).orElse(null);
+            if (null == modelUser) {
                 throw new UnauthorizedException("unauthorized request");
             }
             jwtTokenProvider.revoke(accessToken,refreshToken);
-            String newAccessToken = jwtTokenProvider.generateAccessToken(userModel);
-            String newRefreshToken = jwtTokenProvider.generateRefreshToken(userModel.getId());
-            return ok(UserMapper.constructNewAccessInfo(newAccessToken, newRefreshToken, userModel));
+            String newAccessToken = jwtTokenProvider.generateAccessToken(modelUser);
+            String newRefreshToken = jwtTokenProvider.generateRefreshToken(modelUser.getId());
+            return ok(UserMapper.constructNewAccessInfo(newAccessToken, newRefreshToken, modelUser));
         } catch (Exception exception) {
             log.error("doRefreshTokenFailed failed ex", exception);
             return failed(ErrorCode.errorOnTokenInvalid(exception.getMessage()));

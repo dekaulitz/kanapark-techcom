@@ -5,6 +5,9 @@ import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogin;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoLogout;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoRefreshToken;
 import com.github.dekalitz.kanaparktechcom.application.usecase.auth.DoRegistration;
+import com.github.dekalitz.kanaparktechcom.application.usecase.location.UseCaseGetAllLocationRegion;
+import com.github.dekalitz.kanaparktechcom.application.usecase.product.UseCaseGetAllProduct;
+import com.github.dekalitz.kanaparktechcom.application.usecase.promobanner.UseCaseGetAllBannerPromo;
 import com.github.dekalitz.kanaparktechcom.application.usecase.users.GetAllUsers;
 import com.github.dekalitz.kanaparktechcom.application.usecase.users.GetDetailUsers;
 import com.github.dekalitz.kanaparktechcom.application.usecase.users.UpdateDetailUsers;
@@ -76,4 +79,20 @@ public class UseCaseConfiguration {
   public RestSample restSample() {
     return new RestSample(this.restConfiguration.something());
   }
+
+  @Bean
+  public UseCaseGetAllProduct getAllProduct() {
+    return new UseCaseGetAllProduct(this.serviceConfiguration.getServiceProduct());
+  }
+  @Bean
+  public UseCaseGetAllBannerPromo getAllBannerPromo() {
+    return new UseCaseGetAllBannerPromo(this.serviceConfiguration.getServicePromoBanner());
+  }
+
+  @Bean
+  public UseCaseGetAllLocationRegion getAllLocationRegion() {
+    return new UseCaseGetAllLocationRegion(this.serviceConfiguration.getServiceRegion());
+  }
+
+
 }

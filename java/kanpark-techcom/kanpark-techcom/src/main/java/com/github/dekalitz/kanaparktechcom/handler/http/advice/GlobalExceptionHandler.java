@@ -4,7 +4,7 @@ import com.github.dekalitz.kanaparktechcom.application.dto.Response;
 import com.github.dekalitz.kanaparktechcom.application.exception.ApplicationException;
 import com.github.dekalitz.kanaparktechcom.application.records.ErrorCode;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security.UnauthorizedException;
-import org.apache.logging.log4j.util.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -33,10 +34,29 @@ public class GlobalExceptionHandler {
 
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<Response<Object>> handleIllegalArgumentException(
+      MethodArgumentNotValidException ex) {
+    List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+        .map(FieldError::getDefaultMessage).collect(Collectors.toList());
+    var errCode = ErrorCode.errorOnRequiredField(errors);
+    return getResponseResponseEntity(errCode);
+
+  }
+
   @ExceptionHandler(ApplicationException.class)
   public ResponseEntity<Response<Object>> handleApplicationException(ApplicationException ex) {
     var errCode = ex.getErrorCode();
+    if (errCode == null) {
+      errCode = ErrorCode.generalError(ex.getMessage());
+    }
     return getResponseResponseEntity(errCode);
+  }
+
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<Response<Object>> handleApplicationException(Exception ex) {
+    log.error(ex.getMessage(), ex);
+    return getResponseResponseEntity(ErrorCode.errorOnUnhandledException());
   }
 
   @ExceptionHandler(UnauthorizedException.class)
@@ -65,7 +85,7 @@ public class GlobalExceptionHandler {
         new Response.ErrorResponse(errCode.statusCode(), errCode.message()));
     var httpCode = HttpStatus.resolve(errCode.httpCode());
     return new ResponseEntity<>(result, new HttpHeaders(),
-        httpCode != null ? httpCode : HttpStatus.BAD_REQUEST);
+        httpCode != null ? httpCode : HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 

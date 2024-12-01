@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class BaseModel implements Serializable {
+public class ModelBase implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @NotBlank

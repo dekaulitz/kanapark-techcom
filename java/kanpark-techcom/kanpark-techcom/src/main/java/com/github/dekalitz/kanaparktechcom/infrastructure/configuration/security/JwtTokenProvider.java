@@ -2,7 +2,7 @@ package com.github.dekalitz.kanaparktechcom.infrastructure.configuration.securit
 
 import com.github.dekalitz.kanaparktechcom.application.exception.ApplicationException;
 import com.github.dekalitz.kanaparktechcom.application.records.ErrorCode;
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
 import com.github.dekalitz.kanaparktechcom.domain.repository.cache.AuthCache;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
@@ -37,16 +37,16 @@ public class JwtTokenProvider {
         this.authCache = authCache;
     }
 
-    public String generateAccessToken(UserModel userModel) throws ApplicationException {
-        List<GrantedAuthority> grantedAuthorities = userModel.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    public String generateAccessToken(ModelUser modelUser) throws ApplicationException {
+        List<GrantedAuthority> grantedAuthorities = modelUser.getAuthorities().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         JwtClaims claims = new JwtClaims();
-        claims.setSubject(userModel.getId());
+        claims.setSubject(modelUser.getId());
         claims.setClaim("roles", grantedAuthorities);
         claims.setExpirationTimeMinutesInTheFuture(tokenExpirationTimeInMinutes);
         claims.setIssuedAtToNow();
         claims.setGeneratedJwtId();
         try {
-            authCache.setCacheAndExpired(claims.getJwtId(), userModel.getId(), tokenExpirationTimeInMinutes + toleranceInMinutes);
+            authCache.setCacheAndExpired(claims.getJwtId(), modelUser.getId(), tokenExpirationTimeInMinutes + toleranceInMinutes);
             return createToken(claims);
         } catch (JoseException | MalformedClaimException e) {
             throw new ApplicationException(ErrorCode.errorOnGenerateToken(e.getMessage()));

@@ -1,11 +1,11 @@
 package com.github.dekalitz.kanaparktechcom.domain.repository.database;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.BaseModel;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelBase;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseRepository<T extends BaseModel> {
+public interface RepositoryBase<T extends ModelBase> {
     public T save(T userModel);
 
     public Optional<T> findById(String id);

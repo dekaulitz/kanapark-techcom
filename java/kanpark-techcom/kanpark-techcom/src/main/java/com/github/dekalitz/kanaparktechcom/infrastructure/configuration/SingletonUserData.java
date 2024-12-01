@@ -1,6 +1,5 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.configuration;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
 import lombok.Getter;
 
 import java.util.ArrayList;

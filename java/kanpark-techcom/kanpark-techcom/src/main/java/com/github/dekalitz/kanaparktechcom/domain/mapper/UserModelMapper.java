@@ -1,15 +1,15 @@
 package com.github.dekalitz.kanaparktechcom.domain.mapper;
 
 import com.github.dekalitz.kanaparktechcom.application.dto.RequestUserDto;
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
 
 public class UserModelMapper {
 
     private UserModelMapper() {
     }
 
-    public static UserModel fromUserDto(String id, RequestUserDto data) {
-        var userModel = UserModel.builder()
+    public static ModelUser fromUserDto(String id, RequestUserDto data) {
+        var userModel = ModelUser.builder()
                 .username(data.getUsername())
                 .email(data.getEmail())
                 .firstname(data.getFirstname())

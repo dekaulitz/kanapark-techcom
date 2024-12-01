@@ -1,14 +1,14 @@
-package com.github.dekalitz.kanaparktechcom.domain.service.userservice;
+package com.github.dekalitz.kanaparktechcom.domain.service.serviceuser;
 
 import com.github.dekalitz.kanaparktechcom.domain.exception.DomainException;
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
 import com.github.dekalitz.kanaparktechcom.domain.service.base.BaseServiceImpl;
 
-public class UserServiceImpl extends BaseServiceImpl<UserModel> implements UserService {
-    private final UserRepository userRepository;
+public class UserServiceImpl extends BaseServiceImpl<ModelUser> implements UserService {
+    private final RepositoryUser userRepository;
 
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(RepositoryUser repository) {
         super(repository);
         this.userRepository = repository;
     }
@@ -19,7 +19,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserModel> implements UserS
     }
 
     @Override
-    public UserModel updateById(String id, UserModel data) throws DomainException {
+    public ModelUser updateById(String id, ModelUser data) throws DomainException {
         if (!userRepository.isExists(id)) {
             throw new DomainException("data not found");
         }

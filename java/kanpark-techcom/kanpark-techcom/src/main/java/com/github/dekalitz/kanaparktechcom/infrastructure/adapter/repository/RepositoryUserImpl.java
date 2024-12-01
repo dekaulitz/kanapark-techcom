@@ -1,7 +1,7 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
+import com.github.dekalitz.kanaparktechcom.domain.model.ModelUser;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
 import com.github.dekalitz.kanaparktechcom.infrastructure.configuration.SingletonUserData;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,32 +10,32 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepositoryImpl extends BaseRepository implements UserRepository {
-    private final SingletonUserData<UserModel> singleTon = SingletonUserData.getInstance();
+public class RepositoryUserImpl extends BaseRepository implements RepositoryUser {
+    private final SingletonUserData<ModelUser> singleTon = SingletonUserData.getInstance();
 
     private final PasswordEncoder passwordEncoder;
     private final static String COLLECTION_NAME = "user";
 
-    public UserRepositoryImpl(PasswordEncoder passwordEncoder) {
+    public RepositoryUserImpl(PasswordEncoder passwordEncoder) {
         super(COLLECTION_NAME);
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserModel save(UserModel userModel) {
-        if (null == userModel.getCreatedAt()) {
-            userModel.setCreatedAt(new Date());
+    public ModelUser save(ModelUser modelUser) {
+        if (null == modelUser.getCreatedAt()) {
+            modelUser.setCreatedAt(new Date());
         }
-        userModel.setUpdatedAt(new Date());
-        userModel.setId(String.valueOf(new Date().getTime()));
-        userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
-        singleTon.getUserModelList().add(userModel);
-        return userModel;
+        modelUser.setUpdatedAt(new Date());
+        modelUser.setId(String.valueOf(new Date().getTime()));
+        modelUser.setPassword(passwordEncoder.encode(modelUser.getPassword()));
+        singleTon.getUserModelList().add(modelUser);
+        return modelUser;
     }
 
     @Override
     @Cacheable(value = "UserModel", key = "#id")
-    public Optional<UserModel> findById(String id) {
+    public Optional<ModelUser> findById(String id) {
         return singleTon.getUserModelList()
                 .stream()
                 .filter(userModel -> userModel.getId().equals(id))
@@ -43,7 +43,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
     }
 
     @Override
-    public List<UserModel> findAll() {
+    public List<ModelUser> findAll() {
         return singleTon.getUserModelList();
     }
 
@@ -61,14 +61,14 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
     }
 
     @Override
-    public UserModel updateById(String id, UserModel userModel) {
+    public ModelUser updateById(String id, ModelUser modelUser) {
         return singleTon.getUserModelList().stream()
                 .filter(model -> model.getId().equals(id))
                 .peek(model -> {
-                    model.setUsername(userModel.getUsername());
-                    model.setEmail(userModel.getEmail());
-                    model.setFirstname(userModel.getFirstname());
-                    model.setLastname(userModel.getLastname());
+                    model.setUsername(modelUser.getUsername());
+                    model.setEmail(modelUser.getEmail());
+                    model.setFirstname(modelUser.getFirstname());
+                    model.setLastname(modelUser.getLastname());
                 })
                 .findFirst()
                 .orElse(null);
@@ -82,7 +82,7 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
     }
 
     @Override
-    public UserModel findByEmail(String email) {
+    public ModelUser findByEmail(String email) {
         return singleTon.getUserModelList().stream()
                 .filter(model -> model.getEmail().equals(email))
                 .findFirst()
@@ -90,14 +90,14 @@ public class UserRepositoryImpl extends BaseRepository implements UserRepository
     }
 
     @Override
-    public UserModel verifyEmailAndPassword(String email, String password) {
-        UserModel userModel = singleTon.getUserModelList().stream()
+    public ModelUser verifyEmailAndPassword(String email, String password) {
+        ModelUser modelUser = singleTon.getUserModelList().stream()
                 .filter(model -> model.getEmail().equals(email))
                 .findFirst()
                 .orElse(null);
-        if (null == userModel || !passwordEncoder.matches(password, userModel.getPassword())) {
+        if (null == modelUser || !passwordEncoder.matches(password, modelUser.getPassword())) {
             return null;
         }
-        return userModel;
+        return modelUser;
     }
 }

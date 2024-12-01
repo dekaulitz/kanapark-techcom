@@ -5,7 +5,7 @@ import com.github.dekalitz.kanaparktechcom.application.dto.Response;
 import com.github.dekalitz.kanaparktechcom.application.mapper.UserMapper;
 import com.github.dekalitz.kanaparktechcom.application.usecase.BaseCase;
 import com.github.dekalitz.kanaparktechcom.application.usecase.UseCase;
-import com.github.dekalitz.kanaparktechcom.domain.service.userservice.UserService;
+import com.github.dekalitz.kanaparktechcom.domain.service.serviceuser.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserModel extends BaseModel implements Serializable {
+public class ModelUser extends ModelBase implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @NotBlank

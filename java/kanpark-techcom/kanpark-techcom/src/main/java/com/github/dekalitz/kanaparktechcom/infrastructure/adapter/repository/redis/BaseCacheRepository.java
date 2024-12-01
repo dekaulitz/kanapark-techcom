@@ -1,6 +1,5 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.redis;
 
-import com.github.dekalitz.kanaparktechcom.domain.model.UserModel;
 import com.github.dekalitz.kanaparktechcom.domain.repository.cache.CacheRepository;
 import com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.BaseRepository;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -1,0 +1,92 @@
+{
+  "productType": "event",
+  "timeZone": "Asia/Jakarta",
+  "status": "ACTIVE",
+  "currency": "USD",
+  "productName": {
+    "en": "Music Festival 2024",
+    "id": "Festival Musik 2024",
+    "es": "Festival de Música 2024"
+  },
+  "productDescription": {
+    "en": "Join us for the biggest music festival of the year with top artists and unforgettable performances.",
+    "id": "Bergabunglah dengan kami untuk festival musik terbesar tahun ini dengan artis-artis top dan penampilan tak terlupakan.",
+    "es": "Únete a nosotros para el festival de música más grande del año con los mejores artistas y actuaciones inolvidables."
+  },
+  "productUrls": {
+    "en": "https://example.com/products/music-festival-2024/en",
+    "id": "https://example.com/products/music-festival-2024/id",
+    "es": "https://example.com/products/music-festival-2024/es"
+  },
+  "eventDetails": {
+    "startDate": "2024-12-01T18:00:00Z",
+    "endDate": "2024-12-02T02:00:00Z",
+    "location": {
+      "venue": "Grand Arena",
+      "address": "Jl. Raya No. 10, Jakarta, Indonesia",
+      "city": "Jakarta",
+      "country": "Indonesia",
+      "zipCode": "12345"
+    }
+  },
+  "longLat": {
+    "latitude": -6.21462,
+    "longitude": 106.84513
+  },
+  "images": {
+    "large": "https://example.com/products/music-festival-large.jpg",
+    "medium": "https://example.com/products/music-festival-medium.jpg",
+    "small": "https://example.com/products/music-festival-small.jpg"
+  },
+  "partnerId": "partner_001",
+  "categoryId": "cat_005",
+  "subcategories": [
+    "subcat_001",
+    "subcat_002"
+  ],
+  "tags": [
+    "music",
+    "festival",
+    "live performances",
+    "2024"
+  ],
+  "packages": [
+    {
+      "packageId": "pkg_001",
+
+      "packageName": {
+        "en": "General Admission",
+        "id": "Tiket Masuk Umum",
+        "es": "Admisión General"
+      },
+      "packageDescription": {
+        "en": "Access to all areas except VIP.",
+        "id": "Akses ke semua area kecuali VIP.",
+        "es": "Acceso a todas las áreas excepto VIP."
+      },
+      "quantityAvailable": 2000,
+      "pricingType": "MARKUP",
+      "priceTiers": [
+        {
+          "tierId": "Early Bird",
+          "tierName": {
+            "en": "Early Bird Admission",
+            "id": "Tiket Masuk Early Bird",
+            "es": "Admisión Temprana"
+          },
+          "minQuantity": 1,
+          "maxQuantity": 5,
+          "price": 80.00,
+          "commission": {
+            "type": "percentage",
+            "value": 10
+          }
+        }
+      ]
+    }
+  ],
+  "locationIds": [
+    "jakarta"
+  ],
+  "popularityScore": 1000
+}

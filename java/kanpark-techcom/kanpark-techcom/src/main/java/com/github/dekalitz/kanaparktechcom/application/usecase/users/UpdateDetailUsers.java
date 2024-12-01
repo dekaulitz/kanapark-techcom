@@ -8,8 +8,8 @@ import com.github.dekalitz.kanaparktechcom.application.records.UpdateUserUseCase
 import com.github.dekalitz.kanaparktechcom.application.usecase.BaseCase;
 import com.github.dekalitz.kanaparktechcom.application.usecase.UseCase;
 import com.github.dekalitz.kanaparktechcom.domain.mapper.UserModelMapper;
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
-import com.github.dekalitz.kanaparktechcom.domain.service.userservice.UserService;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
+import com.github.dekalitz.kanaparktechcom.domain.service.serviceuser.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -17,9 +17,9 @@ public class UpdateDetailUsers extends BaseCase<ResponseUserDto> implements UseC
 
     private final UserService userService;
 
-    private final UserRepository userRepository;
+    private final RepositoryUser userRepository;
 
-    public UpdateDetailUsers(UserService userService, UserRepository userRepository) {
+    public UpdateDetailUsers(UserService userService, RepositoryUser userRepository) {
         this.userService = userService;
         this.userRepository = userRepository;
     }

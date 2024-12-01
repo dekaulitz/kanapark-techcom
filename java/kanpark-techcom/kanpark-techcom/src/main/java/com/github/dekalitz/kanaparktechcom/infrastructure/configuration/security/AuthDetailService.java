@@ -1,7 +1,7 @@
 package com.github.dekalitz.kanaparktechcom.infrastructure.configuration.security;
 
 
-import com.github.dekalitz.kanaparktechcom.domain.repository.database.UserRepository;
+import com.github.dekalitz.kanaparktechcom.domain.repository.database.RepositoryUser;
 import com.github.dekalitz.kanaparktechcom.infrastructure.adapter.repository.redis.AuthCacheRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,11 +13,11 @@ import java.util.List;
 @Service
 public class AuthDetailService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final RepositoryUser userRepository;
 
     private final AuthCacheRepository authCacheRepository;
 
-    public AuthDetailService(UserRepository userRepository, AuthCacheRepository authCacheRepository) {
+    public AuthDetailService(RepositoryUser userRepository, AuthCacheRepository authCacheRepository) {
         this.userRepository = userRepository;
         this.authCacheRepository = authCacheRepository;
     }
